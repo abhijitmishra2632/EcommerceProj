@@ -1,0 +1,8 @@
+1.Start a Project.
+2.Create Repository.
+3.Open Git perspective in Eclipse.
+4.Clone the Git Repository.
+5.Choose Directory and Finish.
+6.Create a Java Proj.
+7.select proj->ryt click->team->share proj->select repo->finish.
+8.Now u can push and commit all to stage with commit msg.
