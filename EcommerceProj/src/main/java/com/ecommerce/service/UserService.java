@@ -84,20 +84,21 @@ public class UserService {
 
 	private void createPasswordINDB(UserProfile userProfile) {
 		String password = userProfile.getUserPassword();
-		String name = userProfile.getUserName();
-		try {
-			UserPassword userPassword = PasswordUtil.encryptUserPassword(password, name);
-			long mobile = Long.parseLong(userProfile.getUserMobileNumber());
-			userPassword.setPrimaryMobileNumber(mobile);
-			userPassword.setUserEmailId(userProfile.getUserEmailId());
-			userPassword.setPasswordExpiryDate(LocalDate.now().plusDays(ConstantDetails.passwordExpiryPeriod));
+		UserPassword userPassword = new UserPassword();
+		/*
+		 * try { //UserPassword userPassword =
+		 * PasswordUtil.encryptUserPassword(password, name);
+		 * 
+		 * } catch (GeneralSecurityException e) { // TODO Auto-generated catch block
+		 * System.out.println(e); }
+		 */
+		userPassword.setPassword(password);
+		long mobile = Long.parseLong(userProfile.getUserMobileNumber());
+		userPassword.setPrimaryMobileNumber(mobile);
+		userPassword.setUserEmailId(userProfile.getUserEmailId());
+		userPassword.setPasswordExpiryDate(LocalDate.now().plusDays(ConstantDetails.passwordExpiryPeriod));
 
-			System.out.println(userPassword);
-			passwordRepository.save(userPassword);
-		} catch (GeneralSecurityException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e);
-		}
+		passwordRepository.save(userPassword);
 
 	}
 
@@ -106,7 +107,8 @@ public class UserService {
 		user.setUserName(userProfile.getUserName());
 		Long mobile = Long.parseLong(userProfile.getUserMobileNumber());
 		user.setPrimaryMobileNumber(mobile);
-		user.setSecondaryMobileNumber(0);
+		if (null !=userProfile.getSecondaryMobileNumber() && !userProfile.getSecondaryMobileNumber().isEmpty())
+			user.setSecondaryMobileNumber(Long.parseLong(userProfile.getSecondaryMobileNumber()));
 		user.setUserEmailId(userProfile.getUserEmailId());
 		String dob = userProfile.getDob();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstantDetails.dateFormatter);

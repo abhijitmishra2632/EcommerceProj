@@ -34,7 +34,7 @@ public class PasswordUtil {
 			System.exit(1);
 		}
 		UserPassword userPassword = new UserPassword();
-		userPassword.setPassword(ciphertext);
+		//userPassword.setPassword(ciphertext);
 		return userPassword;
 	}
 

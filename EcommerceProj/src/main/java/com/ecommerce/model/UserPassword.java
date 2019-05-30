@@ -13,7 +13,7 @@ public class UserPassword {
 	@Id
 	private long primaryMobileNumber;
 	private String userEmailId;
-	private byte[] password;
+	private String password;
 	private LocalDate passwordExpiryDate;
 	public UserPassword() {
 		super();
@@ -30,23 +30,20 @@ public class UserPassword {
 	public void setUserEmailId(String userEmailId) {
 		this.userEmailId = userEmailId;
 	}
-	public byte[] getPassword() {
-		return password;
-	}
-	public void setPassword(byte[] password) {
-		this.password = password;
-	}
+	
 	public LocalDate getPasswordExpiryDate() {
 		return passwordExpiryDate;
 	}
 	public void setPasswordExpiryDate(LocalDate passwordExpiryDate) {
 		this.passwordExpiryDate = passwordExpiryDate;
 	}
-	@Override
-	public String toString() {
-		return "UserPassword [primaryMobileNumber=" + primaryMobileNumber + ", userEmailId=" + userEmailId
-				+ ", password=" + Arrays.toString(password) + ", passwordExpiryDate=" + passwordExpiryDate + "]";
+	public String getPassword() {
+		return password;
 	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
 	
 
 }

@@ -9,6 +9,7 @@ import com.ecommerce.model.Address;
 public class UserProfile {
 	private String userName;
 	private String userMobileNumber;
+	private String secondaryMobileNumber;
 	private String userEmailId;
 	private String userPassword;
 	private String dob;
@@ -51,6 +52,12 @@ public class UserProfile {
 	}
 	public void setUserEmailId(String userEmailId) {
 		this.userEmailId = userEmailId;
+	}
+	public String getSecondaryMobileNumber() {
+		return secondaryMobileNumber;
+	}
+	public void setSecondaryMobileNumber(String secondaryMobileNumber) {
+		this.secondaryMobileNumber = secondaryMobileNumber;
 	}
 
 }
