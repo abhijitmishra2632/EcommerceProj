@@ -1,0 +1,25 @@
+{
+        "userName": "Abhijit Mishra",
+		"userMobileNumber": "8892334981",
+		"userEmailId": "abhijitmishra4163@gmail.com",
+		"userPassword": "Welcome@123",
+		"dob": "2-Nov-1989",
+        "userAddress": [
+            {
+                "streetAddress": "Shollinganallur",
+                "landmark": null,
+                "city": "Chennai",
+                "zipCode": "600119",
+                "country": null,
+                "tag": "office"
+            },
+            {
+                "streetAddress": "Vijayanagaram",
+                "landmark": null,
+                "city": "Chennai",
+                "zipCode": "600100",
+                "country": null,
+                "tag": "home"
+            }
+        ]
+}
