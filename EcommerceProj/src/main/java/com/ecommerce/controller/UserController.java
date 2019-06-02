@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecommerce.gist.UpdateUserProfile;
 import com.ecommerce.gist.UserProfile;
 import com.ecommerce.model.User;
 import com.ecommerce.service.UserService;
@@ -42,6 +43,14 @@ public class UserController {
 		userService.profileUser(userProfile);
 		String str = "Succesfully added User:"+userProfile.getUserName();
 		return str;
+	}
+	@RequestMapping(value="/user/{userId}", method = RequestMethod.PUT)
+	public String updateUser(@PathVariable long userId,@RequestBody UpdateUserProfile updateUserProfile) {
+		return userService.updateUser(userId,updateUserProfile);
+	}
+	@RequestMapping(value="/user/{userId}", method = RequestMethod.DELETE)
+	public String deleteUser(@PathVariable long userId) {
+		return userService.deleteUser(userId);
 	}
 	
 }

@@ -3,8 +3,11 @@ package com.ecommerce.service;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,14 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.constants.ConstantDetails;
+import com.ecommerce.gist.UpdateUserProfile;
 import com.ecommerce.gist.UserProfile;
 import com.ecommerce.model.Address;
 import com.ecommerce.model.User;
 import com.ecommerce.model.UserPassword;
 import com.ecommerce.repository.PasswordRepository;
 import com.ecommerce.repository.UserRepository;
-import com.ecommerce.util.PasswordUtil;
-
 
 @Service
 public class UserService {
@@ -28,7 +30,6 @@ public class UserService {
 	private UserRepository userRepository;
 	@Autowired
 	private PasswordRepository passwordRepository;
-
 	/*
 	 * public void addDummyUser() { Address address = new Address();
 	 * address.setStreetAddress("Vijayanagaram"); address.setCity("Chennai");
@@ -66,8 +67,8 @@ public class UserService {
 		if (userProfile != null) {
 			createUserInDB(userProfile);
 			createPasswordINDB(userProfile);
-			//long userMobileNumber = Long.parseLong(userProfile.getUserMobileNumber());
-			//printPassword(userMobileNumber);
+			// long userMobileNumber = Long.parseLong(userProfile.getUserMobileNumber());
+			// printPassword(userMobileNumber);
 		}
 
 	}
@@ -107,13 +108,13 @@ public class UserService {
 		user.setUserName(userProfile.getUserName());
 		Long mobile = Long.parseLong(userProfile.getUserMobileNumber());
 		user.setPrimaryMobileNumber(mobile);
-		if (null !=userProfile.getSecondaryMobileNumber() && !userProfile.getSecondaryMobileNumber().isEmpty())
+		if (null != userProfile.getSecondaryMobileNumber() && !userProfile.getSecondaryMobileNumber().isEmpty())
 			user.setSecondaryMobileNumber(Long.parseLong(userProfile.getSecondaryMobileNumber()));
 		user.setUserEmailId(userProfile.getUserEmailId());
 		String dob = userProfile.getDob();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstantDetails.dateFormatter);
 		// convert String to LocalDate
-		LocalDate localDate = LocalDate.parse(dob , formatter);
+		LocalDate localDate = LocalDate.parse(dob, formatter);
 		user.setDob(localDate);
 		Set<Address> userAddress = new HashSet<Address>();
 		userAddress.addAll(userProfile.getUserAddress());
@@ -122,6 +123,62 @@ public class UserService {
 		}
 		user.setUserAddress(userAddress);
 		userRepository.save(user);
+	}
+
+	public String updateUser(long userId, UpdateUserProfile updateUserProfile) {
+		User user = userRepository.findById(userId).get();
+		UserPassword userPassword = passwordRepository.findById(user.getPrimaryMobileNumber()).get();
+		String str = updateUserImpl(user, userPassword, updateUserProfile);
+		return str;
+	}
+
+	private String updateUserImpl(User user, UserPassword userPassword, UpdateUserProfile updateUserProfile) {
+		if (updateUserProfile.getSecondaryMobileNumber() != null
+				&& !updateUserProfile.getSecondaryMobileNumber().isEmpty())
+			user.setSecondaryMobileNumber(Long.parseLong(updateUserProfile.getSecondaryMobileNumber()));
+		if (updateUserProfile.getUserName() != null && !updateUserProfile.getUserName().isEmpty())
+			user.setUserName(updateUserProfile.getUserName());
+		if (updateUserProfile.getUserEmailId() != null && !updateUserProfile.getUserEmailId().isEmpty())
+			user.setUserEmailId(updateUserProfile.getUserEmailId());
+		if (updateUserProfile.getDob() != null && !updateUserProfile.getDob().isEmpty()) {
+			String dob = updateUserProfile.getDob();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstantDetails.dateFormatter);
+			LocalDate localDate = LocalDate.parse(dob, formatter);
+			user.setDob(localDate);
+		}
+		if (updateUserProfile.getUserAddress() != null && !updateUserProfile.getUserAddress().isEmpty()) {
+			List<Address> addrList = new ArrayList<>();
+			addrList.addAll(user.getUserAddress());
+			addrList.addAll(updateUserProfile.getUserAddress());
+			Map<String, Address> maps = new HashMap<String, Address>();
+			for (Address addr : addrList) {
+				maps.put(addr.getTag(), addr);
+			}
+			List<Address> targetList = new ArrayList<>(maps.values());
+			Set<Address> updatedaddresses = new HashSet<Address>();
+			updatedaddresses.addAll(targetList);
+			user.setUserAddress(updatedaddresses);
+			for (Address addr : targetList) {
+				addr.setUser(user);
+			}
+
+		}
+
+		if (updateUserProfile.getUserPassword() != null && !updateUserProfile.getUserPassword().isEmpty()) {
+			userPassword.setPassword(updateUserProfile.getUserPassword());
+			userPassword.setPasswordExpiryDate(LocalDate.now().plusDays(ConstantDetails.passwordExpiryPeriod));
+		}
+		userRepository.save(user);
+		passwordRepository.save(userPassword);
+		return "Success";
+	}
+
+	public String deleteUser(long userId) {
+		User user = userRepository.findById(userId).get();
+		UserPassword userPassword = passwordRepository.findById(user.getPrimaryMobileNumber()).get();
+		userRepository.delete(user);
+		passwordRepository.delete(userPassword);
+		return "Success";
 	}
 
 }

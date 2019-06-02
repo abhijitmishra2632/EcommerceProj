@@ -2,8 +2,6 @@ package com.ecommerce.model;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -13,14 +11,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Entity
 @Table(name = "UserAddress")
 public class Address {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long addressId;
 	private String streetAddress; 
     private String landmark;
     private String city;  
     private String zipCode;  
     private String country;
+    @Id
     private String tag;
     @JsonBackReference
     @ManyToOne(optional = false ,fetch = FetchType.LAZY)
